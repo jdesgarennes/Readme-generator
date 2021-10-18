@@ -1,34 +1,29 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const { title } = require('process');
+const generateMarkdown = require('./generateMarkdown');
 
 
-// building template here for README.MD file
-
-
-const genReadme = ({ Title, Description, Usage, Questions, Github }) =>
-  `
-  # Title: ${Title}
-
-  ## Description: ${Description}
-
-  ## Usage:  ${Usage}
-
-  ## Questions: ${Questions}
-
-  ## Github username: ${Github}
-  `;
-
-
-// begining of the Inquirer menu system.
-
+//  This starts the begining of the inquirer Questions
 inquirer
   .prompt([
+
+    {   
+        type: 'list',
+        name: 'licenses',
+        message: 'What type of license should we include',
+        choices: ['MIT','GPL','APACHE' ],
+
+    },
     {
       type: 'input',
       name: 'Title',
       message: 'What is the Title of your README?: ',
     },
+    {
+        type: 'input',
+        name: 'image',
+        message: 'What is the name of your screenshot? just the name not the extention and must be a .jpg file: ',
+      },
     {
       type: 'input',
       name: 'Description',
@@ -37,7 +32,7 @@ inquirer
     {
       type: 'input',
       name: 'Usage',
-      message: 'How give a step by step usage summary. ',
+      message: 'Give a how to step by step usage summary. ',
     },
     {
       type: 'input',
@@ -52,9 +47,10 @@ inquirer
     
   ])
   .then((answers) => {
-    const readmeContent = genReadme(answers);
+   // gathers the data from user and generates the README.md file
+     const readmeContent = generateMarkdown(answers);
 
-    fs.writeFile('README.md', readmeContent, (err) =>
-      err ? console.log(err) : console.log('Successfully created index.html!')
-    );
+     fs.writeFile('README.md', readmeContent, (err) =>
+       err ? console.log(err) : console.log('Successfully created README.md!')
+     );
   });
